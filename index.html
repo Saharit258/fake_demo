@@ -91,7 +91,7 @@
       height: 8px;
       border-radius: 50%;
       pointer-events: none;
-      animation: rise 3s forwards; /* เวลากระจาย 3 วินาที */
+      animation: rise 3s forwards;
     }
     @keyframes rise {
       0% {
@@ -129,11 +129,19 @@
     const stopBtn = document.getElementById("stop");
     const fireworkSound = document.getElementById("fireworkSound");
 
+    // Preload ภาพทั้งหมดเพื่อให้ GIF ลื่น
+    const images = [];
+    frames.forEach(src => {
+      const img = new Image();
+      img.src = src;
+      images.push(img);
+    });
+
     function startAnimation() {
       if (!interval) {
         interval = setInterval(() => {
-          index = (index + 1) % frames.length;
-          gif.src = frames[index];
+          index = (index + 1) % images.length;
+          gif.src = images[index].src; // ใช้ preload
         }, 80); // ปรับความเร็ว GIF
         gif.classList.add("playing");
       }
@@ -154,14 +162,14 @@
     stopBtn.addEventListener("click", stopAnimation);
 
     function createFullScreenFireworks() {
-      for (let i = 0; i < 100; i++) { // จำนวน particle
+      for (let i = 0; i < 100; i++) {
         const p = document.createElement('div');
         p.classList.add('particle');
 
         const startX = Math.random() * window.innerWidth;
         const startY = Math.random() * window.innerHeight;
-        const dx = (Math.random() - 0.5) * 300 + "px"; // กระจายแนวนอน
-        const dy = (Math.random() - 1) * 300 + "px";   // ลอยขึ้น
+        const dx = (Math.random() - 0.5) * 300 + "px";
+        const dy = (Math.random() - 1) * 300 + "px";
         p.style.setProperty('--x', dx);
         p.style.setProperty('--y', dy);
         p.style.background = `hsl(${Math.random()*360}, 80%, 60%)`;
